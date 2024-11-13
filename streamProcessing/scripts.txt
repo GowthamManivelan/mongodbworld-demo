@@ -1,0 +1,66 @@
+AtlasStreamProcessing>  let sp3=[{"$source":{"connectionName":"check-ins","topic":"check-ins"}},{"$tumblingWindow":{"interval":{"size":NumberInt(5),"unit":"second"},"pipeline":[{"$group":{"_id":"$location","locationCount":{"$sum":1}}},{"$addFields":{"timestamp":"$_stream_meta.window.end"}}]}},{"$merge":{"into":{"connectionName":"mongodbworld","db":"MongoDBWorld-NYC","coll":"LocationDensity"},"on":"_id","whenMatched":[{ "$set": { "locationCount": { "$sum": ["$locationCount", "$$new.locationCount"] } } }],"whenNotMatched":"insert"}}]
+
+AtlasStreamProcessing> sp.createStreamProcessor("mongodbworldcrowddense",sp3)
+Atlas Stream Processor: mongodbworldcrowddense
+AtlasStreamProcessing> sp.mongodbworldcrowddense.start()
+{ ok: 1 }
+AtlasStreamProcessing> sp.mongodbworldcrowddense.sample()
+{
+  _id: 'Latency Lounge',
+  locationCount: 1,
+  _stream_meta: {
+    source: {
+      type: 'kafka'
+    },
+    window: {
+      start: ISODate('2024-11-13T22:11:35.000Z'),
+      end: ISODate('2024-11-13T22:11:40.000Z')
+    }
+  },
+  timestamp: ISODate('2024-11-13T22:11:40.000Z')
+}
+
+-------------------------------------------
+
+Let sp1 = [
+    {
+       "$match": {
+          "_stream_meta.source.topic": "session-attendance"
+       }
+    },
+    {
+       "$tumblingWindow": {
+          "interval": {
+             "size": NumberInt(5),
+             "unit": "minute"
+          },
+          "pipeline": [
+              {
+                 "$group": {
+                    "_id": "$sessionID",
+                    "attendeeCount": { "$sum": 1 }
+                 }
+              },
+              {
+                 "$addFields": {
+                    "timestamp": "$_stream_meta.window.end"
+                 }
+              }
+          ]
+       }
+    },
+    {
+       "$merge": {
+          "into": {
+             "db": "MongoDBWorld-NYC",
+             "coll": "SessionPopularity"
+          },
+          "whenMatched": [
+             { "$set": { "attendeeCount": { "$sum": ["$attendeeCount", "$$new.attendeeCount"] } } }
+          ],
+          "whenNotMatched": "insert"
+       }
+    }
+]
+sp.createStreamProcessor("sessionTracker",sp3)
+sp.sessionTracker.start()

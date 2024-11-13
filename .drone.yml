@@ -1,0 +1,93 @@
+---
+kind: pipeline
+type: kubernetes
+name: default
+
+
+environment: 
+  NAMESPACE: sa-demo
+trigger:
+  branch:
+  - main
+
+steps:
+- name: publish-frontend
+  image: plugins/kaniko-ecr
+  settings:
+    create_repository: true
+    registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+    repo: sa-demo/${DRONE_REPO_NAME}/frontend
+    dockerfile: frontend/Dockerfile
+    context: frontend/
+    tags:
+    - git-${DRONE_COMMIT_SHA:0:7}
+    - latest
+    access_key:
+      from_secret: ecr_access_key
+    secret_key:
+      from_secret: ecr_secret_key
+    build_args:
+      - BACKEND_URL=https://spa-example.sa-demo.staging.corp.mongodb.com/api/v1
+  when:
+    event:
+    - push
+  
+
+
+- name: publish-backend
+  image: plugins/kaniko-ecr
+  settings:
+    create_repository: true
+    registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+    repo: sa-demo/${DRONE_REPO_NAME}/backend
+    dockerfile: backend/Dockerfile
+    context: backend/
+    tags:
+    - git-${DRONE_COMMIT_SHA:0:7}
+    - latest
+    access_key:
+      from_secret: ecr_access_key
+    secret_key:
+      from_secret: ecr_secret_key
+  when:
+    event:
+    - push
+
+
+- name: deploy-frontend-staging
+  image: public.ecr.aws/kanopy/drone-helm:v3
+  environment:
+    RELEASE: team1-frontend
+  settings:
+    chart: mongodb/web-app
+    chart_version: 4.24.2
+    add_repos: [mongodb=https://10gen.github.io/helm-charts]
+    namespace: ${NAMESPACE}
+    release: ${RELEASE}
+    values_files: [ "environments/base.yaml", "environments/frontend.staging.yaml" ]
+    values: image.tag=git-${DRONE_COMMIT_SHA:0:7},image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/sa-demo/${DRONE_REPO_NAME}/frontend
+    api_server: https://api.staging.corp.mongodb.com
+    kubernetes_token:
+      from_secret: staging_kubernetes_token
+  when:
+    event:
+    - push
+
+- name: deploy-backend-staging
+  image: public.ecr.aws/kanopy/drone-helm:v3
+  environment:
+    RELEASE: team1-backend
+  settings:
+    chart: mongodb/web-app
+    chart_version: 4.24.2
+    add_repos: [mongodb=https://10gen.github.io/helm-charts]
+    namespace: ${NAMESPACE}
+    release: ${RELEASE}
+    values_files: [ "environments/base.yaml", "environments/backend.staging.yaml" ]
+    values: image.tag=git-${DRONE_COMMIT_SHA:0:7},image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/sa-demo/${DRONE_REPO_NAME}/backend
+    api_server: https://api.staging.corp.mongodb.com
+    kubernetes_token:
+      from_secret: staging_kubernetes_token
+  when:
+    event:
+    - push

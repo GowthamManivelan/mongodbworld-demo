@@ -14,7 +14,7 @@ COPY . .
 # Accept build argument for VITE_BACKEND_URL
 ARG BACKEND_URL
 
-# Set environment variable for Vite build
+# Set environment variable for Vite build - hardcode the backend URL into the build (when using VITE) - will need adjusted  -21 debug 
 ENV VITE_BACKEND_URL=${BACKEND_URL}
 
 # Echo the BACKEND_URL to verify it during build
@@ -25,7 +25,7 @@ RUN npm run build
 
 FROM nginx:1.23.3-alpine
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

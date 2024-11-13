@@ -1,6 +1,0 @@
-ingress:
-  enabled: true
-  path: /
-  hosts:
-    - team1.sa-demo.staging.corp.mongodb.com
-

@@ -1,0 +1,43 @@
+/* TopNav.css */
+
+.top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #2E7D32;
+    color: white;
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .live-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .live-icon {
+    width: 40px;
+    height: auto;
+  }
+  
+  .timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .search-bar {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  

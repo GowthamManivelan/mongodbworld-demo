@@ -1,0 +1,18 @@
+.top-cards-container {
+  display: flex;
+  justify-content: space-between; /* Changed to space-between for balanced spacing */
+  padding: 20px 40px; /* Wider padding for a cleaner look */
+  gap: 20px;
+}
+
+.card {
+  background-color: #134528;
+  padding: 25px; /* Increased padding for a balanced look */
+  width: 160px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1.4rem; /* Slightly larger font */
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}

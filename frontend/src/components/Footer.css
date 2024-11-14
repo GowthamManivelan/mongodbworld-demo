@@ -1,0 +1,8 @@
+.footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #2E7D32; /* Match with header color */
+    color: white; /* White text for better visibility */
+    font-size: 0.9rem;
+    border-top: 1px solid #ddd;
+}

@@ -1,6 +1,6 @@
 require('dotenv').config({ path: '../config/.env' });
 const { Kafka } = require('kafkajs');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const { logLevel } = require('kafkajs');
 const mongoClient = new MongoClient(process.env.MONGODB_URI);
 const kafka = new Kafka({
@@ -100,9 +100,18 @@ async function sendCheckInMessages() {
             console.warn('No attendees available for check-in messages.');
             return;
         }
+        const db = mongoClient.db('MongoDBWorld-NYC'); 
+        const collection = db.collection('Attendee');
 
+        const randomAttendee = attendees[Math.floor(Math.random() * attendees.length)];
+        
+       // const attendee = await collection.findOne({ _id: randomAttendeeID });
+        const attendee = await collection.findOne({ _id: new ObjectId(randomAttendee) });
+        console.log(attendee)
         const checkInMessage = {
-            attendeeID: attendees[Math.floor(Math.random() * attendees.length)],
+            attendeeID: randomAttendee,
+            position: attendee ? attendee.position : "unknown",
+
             timestamp: new Date().toISOString(),
             location: locations[Math.floor(Math.random() * locations.length)]
         };

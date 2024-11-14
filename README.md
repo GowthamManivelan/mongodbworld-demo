@@ -1,113 +1,105 @@
-MongoDB World Conference – Real-Time Event Management and Analytics
-Overview
-This project simulates a real-time event management platform for the MongoDB World Conference, showcasing MongoDB's advantages over PostgreSQL in handling high-throughput, document-heavy data. It tracks thousands of attendees moving through various conference activities, including check-in, session attendance, crowd density, and personalized recommendations.
+# MongoDB World Conference – Real-Time Event Management and Analytics
 
-The goal is to demonstrate MongoDB's strengths in data ingestion, schema flexibility, nested querying, time-series analytics, and personalized recommendations.
+📖 **Project Overview**
 
-Key Features
-Real-Time Check-In and Badge Scanning: Tracks attendee check-ins in real time with immediate updates using MongoDB Atlas Streams and Kafka.
-Session Attendance Tracking: Efficiently tracks attendees' participation in different sessions.
-Crowd Density Monitoring: Uses MongoDB's time-series collections to display attendee density across event zones.
-Personalized Recommendations: Recommends sessions and vendor booths to attendees based on interests using MongoDB's vector search.
-End-of-Conference Analytics: Aggregates and analyzes data to generate insights into attendee engagement, popular sessions, and movement patterns.
-Prerequisites
-MongoDB Atlas account with a database setup (free or paid)
-Node.js (version 14 or higher)
-NPM or Yarn (package managers)
-Kafka (for streaming simulation) – ensure it’s set up and running locally or in the cloud
-Chart.js for real-time chart visualization on the frontend
-Project Structure
-backend: Contains all server-side logic, including APIs, MongoDB integration, and Kafka streaming.
-frontend: Contains the React application for UI, using Chart.js for live analytics.
-Getting Started
-1. Clone the Repository
-bash
-Copy code
-git clone https://github.com/yourusername/mongodb-world-conference.git
-cd mongodb-world-conference
-2. Set Up Environment Variables
-Create a .env file in the backend/config directory and add the following:
+This project was built for the MongoDB hackathon to showcase MongoDB's real-time data processing capabilities in a high-throughput, document-heavy environment. The MongoDB World Conference platform simulates live attendee activity at a large-scale conference, demonstrating MongoDB’s advantages over PostgreSQL in data ingestion, schema flexibility, time-series analytics, and personalized recommendations.
 
-bash
-Copy code
-MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/MongoDBWorld-NYC?retryWrites=true&w=majority
-KAFKA_BROKER=localhost:9092  # Replace with your Kafka broker's URL if not running locally
-PORT=5000
-Replace <username>, <password>, and <cluster> with your MongoDB Atlas credentials.
+---
 
-3. Install Dependencies
-Backend
+✨ **Key Features**
+
+- **Real-Time Check-In and Badge Scanning:** Live updates of attendee check-ins with real-time badge scanning.
+- **Session Attendance Tracking:** Dynamic tracking of session participation with live attendee counts.
+- **Crowd Density Analysis:** Displays real-time crowd density across event zones using MongoDB’s time-series collections.
+- **Personalized Recommendations:** MongoDB’s vector search provides session and booth recommendations tailored to attendee interests.
+- **Dynamic Schema Flexibility:** MongoDB’s flexible schema allows instant adaptation to new data requirements.
+
+---
+
+🛠 **Tech Stack**
+
+- **Backend:** Node.js, Express, MongoDB Atlas, Kafka (for data streaming)
+- **Frontend:** React, Chart.js for visualizations
+- **Data Processing:** MongoDB Atlas Streams, Atlas Search, and time-series collections
+
+---
+
+🧩 **Architecture**
+
+- **Data Simulation with Kafka:** Kafka streams simulated attendee data as if attendees were actively moving and checking into sessions.
+- **Real-Time Data Processing with Atlas Streams:** The data is processed and aggregated in real-time.
+- **Frontend Dashboard:** React frontend continuously polls the backend for updates, rendering live check-in data, session attendance, and crowd density analysis.
+
+---
+
+🚀 **Getting Started**
+
+### Prerequisites
+
+- **Node.js** (version >= 14)
+- **MongoDB Atlas** account with a cluster set up
+- **Kafka** setup for data streaming (e.g., Confluent Cloud or local Kafka)
+
+### Setup Instructions
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/your-username/mongodb-world-conference
+   cd mongodb-world-conference
+Install dependencies
+
+Backend:
+
 bash
 Copy code
 cd backend
 npm install
-Frontend
+Frontend:
+
 bash
 Copy code
 cd ../frontend
 npm install
-4. Run Kafka Locally (For Data Streaming)
-If you're running Kafka locally, ensure it’s up and running. Kafka should have the following topics:
+Configure Environment Variables
 
-check-ins: For tracking attendee check-ins
-session-attendance: For tracking session attendance
-crowd-density: For tracking density across different zones
-Create topics in Kafka if they’re not already set up:
+In the backend directory, create a config/.env file and add the following variables:
+
+plaintext
+Copy code
+MONGODB_URI=your_mongodb_atlas_uri
+KAFKA_BROKER=your_kafka_broker_uri
+PORT=5000
+Start Kafka (if using local setup)
+
+Follow the Kafka documentation to start the Kafka broker and create the necessary topics for data streaming.
+
+Run the Backend Server
 
 bash
 Copy code
-kafka-topics --create --topic check-ins --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-kafka-topics --create --topic session-attendance --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-kafka-topics --create --topic crowd-density --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-5. Run the Backend Server
-Open a terminal, navigate to the backend folder, and start the server:
+cd backend
+node src/server.js
+Run the Frontend Application
 
 bash
 Copy code
+cd ../frontend
 npm start
-This will start the server on http://localhost:5000.
+🎬 Usage
 
-6. Run the Frontend Client
-Open another terminal, navigate to the frontend folder, and start the client:
+Once both the frontend and backend are running:
 
-bash
-Copy code
-npm start
-The frontend should now be running on http://localhost:3000.
+Open a browser and go to http://localhost:3000.
+You should see the conference dashboard with live updates on attendee counts, session participation, and crowd density.
+Features in Action
+Live Badge Scanning: Check-in counters update in real time.
+Session Attendance Tracking: Visualize attendee distribution across sessions.
+Crowd Density: See live attendee density across zones.
+🎥 Demo
 
-Usage
-Real-Time Event Simulation
-The backend generates simulated attendee check-ins, session attendance, and crowd density updates using Kafka. The MongoDB Atlas Streams listens to these Kafka topics, processes them in real time, and stores the data in MongoDB collections.
+Watch the Demo Video (Link to video here)
 
-Accessing the UI
-Check-In Count: Displays the real-time count of attendees who have checked in.
-Session Attendance: Polar area chart showing real-time session attendance, with intensified color for updated sessions.
-Crowd Density Heatmap: Displays density levels across different zones in real time.
-Personalized Recommendations: Recommends sessions to attendees based on their interests using MongoDB vector search.
-APIs
-GET /api/checkins: Fetches the real-time check-in count.
-GET /api/sessions/live: Fetches live session data for display.
-GET /api/crowddensity: Fetches real-time crowd density data.
-Technical Details
-MongoDB Features
-Atlas Streams: Used for real-time data ingestion from Kafka topics.
-Document Model: Schema flexibility to adapt to dynamic event data.
-Time-Series Collections: Efficient storage and retrieval for time-series data like crowd density.
-Aggregation Pipelines: Real-time aggregation for end-of-conference analytics.
-Vector Search: Provides personalized recommendations.
-Kafka Streaming
-Kafka serves as a data stream for simulating real-time events. Each attendee movement or session attendance event flows through Kafka topics, is processed, and then stored in MongoDB via Atlas Streams.
+📸 Screenshots
 
-Chart.js Integration
-The frontend uses Chart.js for visualizing session attendance and crowd density. The polar area chart highlights session popularity in real time by intensifying colors on update.
-
-Commands Summary
-Command	Description
-npm start (backend)	Starts the backend server
-npm start (frontend)	Starts the frontend client
-kafka-topics --create ...	Creates a Kafka topic for simulation
-mongosh	MongoDB CLI for manually checking data
-Future Improvements
-Enhanced Personalization: Leverage more user data to refine recommendations.
-Scalability Testing: Simulate larger numbers of attendees to test MongoDB’s limits.
-Real-Time Notifications: Notify users about session updates or popular events.
+(Add screenshots or GIFs of the application here)

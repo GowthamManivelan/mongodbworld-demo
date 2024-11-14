@@ -76,19 +76,19 @@ Follow the Kafka documentation to start the Kafka broker and create the necessar
 
 Run the Backend Server
 
-bash
-Copy code
+```bash
+
 cd backend
 node src/server.js
 Run the Frontend Application
 
-bash
-Copy code
+```bash
+
 cd ../frontend
 npm start
 🎬 Usage
 
-Once both the frontend and backend are running:
+**Once both the frontend and backend are running:**
 
 Open a browser and go to http://localhost:3000.
 You should see the conference dashboard with live updates on attendee counts, session participation, and crowd density.

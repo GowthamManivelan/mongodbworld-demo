@@ -47,18 +47,18 @@ This project was built for the MongoDB hackathon to showcase MongoDB's real-time
    ```bash
    git clone https://github.com/your-username/mongodb-world-conference
    cd mongodb-world-conference
-Install dependencies
+ 2. **Install dependencies
 
 Backend:
+```bash
 
-bash
-Copy code
 cd backend
 npm install
+
 Frontend:
 
-bash
-Copy code
+```bash
+
 cd ../frontend
 npm install
 Configure Environment Variables
